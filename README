@@ -156,7 +156,7 @@ You must run your puppetmaster in debug mode to view the debug output.
 
 #### Example Debug Output ####
 
- $ puppet apply --noop -v --debug manifests/init.pp
+ $ puppet apply --noop -v --debug manifests/init.pp --modulepath=/usr/share/puppet/modules
  debug: Scope(Class[example]): ylookup(): --------------------------------------------------------------------
  debug: Scope(Class[example]): ylookup(): Looking for subject 'things'
  debug: Scope(Class[example]): ylookup(): Relative Lookup Path: '[ "/data", "/data/default", "/example/data", "/example/data/default" ]'
