@@ -55,34 +55,44 @@ module Puppet::Parser::Functions
     # --------------------------------
     lookup_name  = args[0]
     default      = args[1]
-    lookup_order = lookupvar('lookup_order') # will always return a string / array (even an empty one)
-    # hacky hacky line, but otherwise the value of lookup_order inside puppet will be changed!!
-    order        = (args[2] || lookup_order).to_a.join("!LoOKUpp!").split("!LoOKUpp!")
+    lookup_order_path = lookupvar('lookup_order_path') # will always return a string / array (even an empty one)
+    lookup_order_files = lookupvar('lookup_order_files') # will always return a string / array (even an empty one)
+    # agreed ohad. a hack, but this does ensure the var is initialized in a way we expect
+    order_path        = (args[2] || lookup_order_path).to_a.join("!LoOKUpp!").split("!LoOKUpp!")
+    order_files       = (args[3] || lookup_order_files).to_a.join("!LoOKUpp!").split("!LoOKUpp!")
 
-    raise Puppet::ParseError, "Unable to find any lookup order make sure you install it in site.pp" if order.nil? or order.empty?
+    raise Puppet::ParseError, "Unable to find any lookup_order_path var set(#{order_path}), make sure you install it in site.pp" if order_path.nil? or (order_path[0] == "undefined")
+   order_files = [ "data", "values" ] if order_files.nil? or (order_files[0] == "undefined")
 
     debug @debug_prefix + "--------------------------------------------------------------------" if @lookup_debug and @debug_pretty
-    debug @debug_prefix + "Looking for '#{lookup_name}'" if @lookup_debug
+    debug @debug_prefix + "Looking for subject '#{lookup_name}' " if @lookup_debug
+    debug @debug_prefix + "Relative Lookup Path: '#{order_path.inspect}'" if @lookup_debug
+    debug @debug_prefix + "Suffix Lookup Filespec: '#{order_files.inspect}'" if @lookup_debug
     debug @debug_prefix + "--------------------------------------------------------------------" if @lookup_debug and @debug_pretty
 
     # --------------------------------
     # expand any variables
     # --------------------------------
-    order.map! { |var| var_to_fact var }
+    order_path.map! { |var| var_to_fact var }
 
     # --------------------------------
-    # search through puppet module path and lookup order
+    # search through puppet module path and lookup order_path
     # --------------------------------
     datafiles = Array.new
     env = lookupvar('environment').to_sym
-    env_path = Puppet.settings.instance_variable_get(:@values)[env][:modulepath].split(":")
+    debug @debug_prefix + "Environment: '#{env}'" if @lookup_debug
+    env_path = Puppet.settings.instance_variable_get(:@values)[env][:modulepath].nil? ? Puppet.settings.value(:modulepath).split(":") : self.split(":")
+    debug @debug_prefix + "Environment path: '#{env_path.inspect}'" if @lookup_file_debug
+    debug @debug_prefix + "--------------------------------------------------------------------" if @lookup_debug and @debug_pretty
     begin
-      order.each do |data_file|
+      order_path.each do |data_file|
         env_path.each do |module_path|
           # where our data file is located at
-          file = "#{module_path}/#{data_file}.yaml"
-          debug @debug_prefix + "scanning if '#{file}' exists" if @lookup_file_debug
-          datafiles << file if File.exists?(file)
+          order_files.each do |filespec|
+            file = "#{module_path}#{data_file}/#{filespec}.yaml"
+            debug @debug_prefix + "Looking for '#{file}'" if @lookup_file_debug
+            datafiles << file if File.exists?(file)
+          end
         end
       end
     rescue
