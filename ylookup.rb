@@ -75,10 +75,7 @@ module Puppet::Parser::Functions
     # --------------------------------
     datafiles = Array.new
     env = lookupvar('environment').to_sym
-    debug @debug_prefix + "Environment: '#{env}'" if @lookup_debug
-    # sets modulepath value from Puppet.settings without env, if result was blank
-    env_path = Puppet.settings.instance_variable_get(:@values)[env][:modulepath].nil? ? Puppet.settings.value(:modulepath).split(":") : self.split(":")
-    debug @debug_prefix + "Environment path: '#{env_path}'" if @lookup_debug
+    env_path = Puppet.settings.instance_variable_get(:@values)[env][:modulepath].split(":")
     begin
       order.each do |data_file|
         env_path.each do |module_path|
