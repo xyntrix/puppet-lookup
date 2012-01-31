@@ -89,7 +89,7 @@ module Puppet::Parser::Functions
         env_path.each do |module_path|
           # where our data file is located at
           order_files.each do |filespec|
-            file = "#{module_path}#{data_file}/#{filespec}.yaml"
+            file = "#{module_path}/#{data_file}/#{filespec}.yaml"
             debug @debug_prefix + "Looking for '#{file}'" if @lookup_file_debug
             datafiles << file if File.exists?(file)
           end

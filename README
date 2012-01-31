@@ -158,7 +158,7 @@ You must run your puppetmaster in debug mode to view the debug output.
 
  $ puppet apply --noop -v --debug manifests/init.pp
  debug: Scope(Class[example]): ylookup(): --------------------------------------------------------------------
- debug: Scope(Class[example]): ylookup(): Looking for subject 'envs'
+ debug: Scope(Class[example]): ylookup(): Looking for subject 'things'
  debug: Scope(Class[example]): ylookup(): Relative Lookup Path: '[ "/data", "/data/default", "/example/data", "/example/data/default" ]'
  debug: Scope(Class[example]): ylookup(): Suffix Lookup Filespec: '["data"]'
  debug: Scope(Class[example]): ylookup(): --------------------------------------------------------------------
@@ -169,8 +169,23 @@ You must run your puppetmaster in debug mode to view the debug output.
  debug: Scope(Class[example]): ylookup(): Looking for '/usr/share/puppet/modules/data/default/data.yaml'
  debug: Scope(Class[example]): ylookup(): Looking for '/usr/share/puppet/modules/example/data/data.yaml'
  debug: Scope(Class[example]): ylookup(): Looking for '/usr/share/puppet/modules/example/data/default/data.yaml'
- debug: Scope(Class[example]): ylookup(): Found the following relevant data files:
-
+ debug: Scope(Class[example]): ylookup(): Found the following relevant data files: /usr/share/puppet/modules/example/data/data.yaml
+ debug: Scope(Class[example]): ylookup(): scanning /usr/share/puppet/modules/example//data/data.yaml
+ debug: Scope(Class[example]): ylookup(): YAML.load_file(/usr/share/puppet/modules/example//data/data.yaml)[lookup_name] result: 'apple,banana,carrot,dog,elephant,fox'
+ debug: Scope(Class[example]): ylookup(): result is a Array
+ debug: Scope(Class[example]): ylookup():  - 'apple,banana,carrot'
+ debug: Scope(Class[example]): ylookup():  - 'dog,elephant,fox'
+ debug: Scope(Class[example]): ylookup(): 'things' => 'apple,banana,carrot,dog,elephant,fox' : from '/usr/share/puppet/modules/example//data/data.yaml'
+ debug: Scope(Class[example]): ylookup(): RESULT: 'things' => 'apple,banana,carrot,dog,elephant,fox'
+ debug: Scope(Class[example]): ylookup():  Recursive calls: 1
+ debug: Creating default schedules
+ debug: Finishing transaction 22222222894160
+ debug: Loaded state in 0.00 seconds
+ debug: Loaded state in 0.00 seconds
+ info: Applying configuration version '1234973671'
+ debug: Finishing transaction 22222222896161
+ debug: Storing state
+ debug: Stored state in 0.01 seconds
 
 ## Known Issues ##
 
