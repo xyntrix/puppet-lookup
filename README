@@ -57,7 +57,7 @@ If you would like to use a different $lookup_order_path, without setting the var
 
 ## Example ##
 
----------- cut YAML example, data/data.yaml ----------
+---------- begin YAML example, data/data.yaml ----------
 
 singlevalue : legs
 
